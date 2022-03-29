@@ -7,6 +7,8 @@ Natalia Guerrero
 
 ### What is this repository for? ###
 
+#### Option A:Interacting Glaxies
+
 * Quick summary
 * Version
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)

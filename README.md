@@ -1,6 +1,9 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+# PHY5905 Project 2: Orbital Dynamics
+
+Pratiksha Balasaheb Gaikwad
+Natalia Guerrero
 
 ### What is this repository for? ###
 

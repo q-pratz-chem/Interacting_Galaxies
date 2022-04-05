@@ -9,17 +9,17 @@ Natalia Guerrero, natalia.guerrero@ufl.edu
 
 ## Project A: Interacting Galaxies
 
-* [ ] ODE solvers
+* ODE solvers
   * R-K
   * leapfrog
 
-* [ ] ODE solver requirements
+*  ODE solver requirements
   * report error (on energy or orbital position)
   * tune error tolerance for stability vs. speed
 
-* [ ] Solver with best error: TBD
+*  Solver with best error: TBD
 
-* [ ] Improve solver generality:
+* Improve solver generality:
   * $ M_1 \ne M_2 $
   * $ e > 0 $
   * $ e = 1 $ (parabolic encounter)

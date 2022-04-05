@@ -2,33 +2,25 @@
 
 # PHY5905 Project 2: Orbital Dynamics
 
-Pratiksha Balasaheb Gaikwad
-Natalia Guerrero
+Pratiksha Balasaheb Gaikwad, p.gaikwad@ufl.edu
 
-### What is this repository for? ###
+Natalia Guerrero, natalia.guerrero@ufl.edu
 
-#### Option A:Interacting Glaxies
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Project A: Interacting Galaxies
 
-### How do I get set up? ###
+-[ ] ODE solvers
+* R-K
+* leapfrog
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+-[] ODE solver requirements
+* report error (on energy or orbital position)
+* tune error tolerance for stability vs. speed
 
-### Contribution guidelines ###
+-[] Solver with best error: TBD
 
-* Writing tests
-* Code review
-* Other guidelines
+-[] Improve solver generality:
+* $ M_1 \ne M_2 $
+* $ e > 0 $
+* $ e = 1 $ (parabolic encounter)
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact

@@ -10,7 +10,7 @@ Natalia Guerrero, natalia.guerrero@ufl.edu
 ### ODE solvers for 2-body problem
 * R-K
 * leapfrog
-* [ ] other
+
 
 ### ODE solver requirements
 * report error (on energy or orbital position)

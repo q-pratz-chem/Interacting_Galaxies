@@ -1,0 +1,23 @@
+import numpy as np
+
+def f(r, **kwargs):
+    """
+    Function defining system of equations of motion for two bodies
+      orbiting about a center of mass
+    
+    Inputs: r -- 2D vector w/ elems r (distance from center of mass),
+                    phi (angle from distance of closest approach)
+    Returns: 2D array of functions f(theta) and f(phi) 
+             evaluated at r, phi
+    """
+    G = kwargs.get('G', 1)
+    M = kwargs.get('M', 1)
+    p = kwargs.get('p', 1)
+    e = kwargs.get('e', 1)
+    
+    r, phi = r[0], r[1]
+    
+    fphi = np.sqrt(G*M*p)/r**2        # phi', angular velocity
+    fr = e*r**2*np.sin(phi)*fphi/p    # r', radial velocity
+    
+    return np.array([fr, fphi], float)

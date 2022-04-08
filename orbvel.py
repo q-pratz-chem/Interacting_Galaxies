@@ -10,10 +10,10 @@ def f(r, **kwargs):
     Returns: 2D array of functions f(theta) and f(phi) 
              evaluated at r, phi
     """
-    G = kwargs.get('G', 1)
-    M = kwargs.get('M', 1)
-    p = kwargs.get('p', 1)
-    e = kwargs.get('e', 1)
+    G = kwargs.get('G', 4.4985e-12) # kpc^3/Msun/Myr^2
+    M = kwargs.get('M', 1e12)      # Msun
+    p = kwargs.get('p', 1)      # kpc
+    e = kwargs.get('e', 0.)        # dimensionless
     
     r, phi = r[0], r[1]
     

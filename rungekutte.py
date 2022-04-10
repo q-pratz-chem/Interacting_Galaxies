@@ -1,4 +1,5 @@
 import numpy as np
+from config import *
 
 def rk4(m0, m1, t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
     """
@@ -19,6 +20,7 @@ def rk4(m0, m1, t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
     
     # initial conditions
     R0 = [r0, phi0]
+    M = m0 + m1
 
     # initialize arrays for t, orbital elements
     t = np.array(t0)
@@ -38,8 +40,9 @@ def rk4(m0, m1, t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
             if debug: print(f"Time: {ti} > {tmax}")
             break
         else:
-            # calculate y(t), y'(t)
+            # calculate next R-K step
             if debug: print(ti, Ri, np.abs(r_check - r_ref))
+            # calculate error at this step
             err = np.append(err, (r_ref - r_check)/r_ref)
             
             # compute k1, k2, k3, k4 for Ri (r_i, phi_i, r_i', phi_i')
@@ -63,5 +66,7 @@ def rk4(m0, m1, t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
     # r: [r, phi, r', phi']
     x = R[:,0]*np.cos(R[:,1])  # r * cos phi
     y = R[:,0]*np.sin(R[:,1])  # r * sin phi
+    
+    print(f"cumulative error = {np.sum(err)}")
 
     return R, x, y, err

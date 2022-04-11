@@ -1,4 +1,5 @@
 import numpy as np
+from config import *
 
 def rk4(m0, m1, t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
     """

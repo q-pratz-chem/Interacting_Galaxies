@@ -1,34 +1,43 @@
 # README #
 
-# PHY5905 Project 2: Orbital Dynamics
+# PHY5905 Project 2: Orbital Dynamics of Interacting Galaxies
 
-Pratiksha Balasaheb Gaikwad
-Natalia Guerrero
+Pratiksha Balasaheb Gaikwad, p.gaikwad@ufl.edu
 
-### What is this repository for? ###
+Natalia Guerrero, natalia.guerrero@ufl.edu
 
-#### Option A:Interacting Glaxies
+### [presentation slides](https://docs.google.com/presentation/d/1ZtoabryzFIdpVTP09o5gMot8YMqf2Mmti0W4XT7Mres/edit?usp=sharing)
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
-### How do I get set up? ###
+### ODE solvers for 2-body problem
+* R-K
+* leapfrog
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
 
-### Contribution guidelines ###
+### ODE solver requirements
+* report error (on energy or orbital position)
+* tune error tolerance for stability vs. speed
 
-* Writing tests
-* Code review
-* Other guidelines
+### Solver with best error: 
+TBD
 
-### Who do I talk to? ###
+### Improve solver generality:
+* $ M_1 \ne M_2 $
+* $ e > 0 $
+* $ e = 1 $ (parabolic encounter)
 
-* Repo owner or admin
-* Other community or team contact
+  
+### Add stars
+* 1-2 particles
+* rings of massless test particles
+  * rings can rotate with or against direction of galactic motion
+
+### Science!
+* varying $R_0$, starting distance
+* comparing stability during parabolic, eccentric orbits
+* varying number, distribution of test particles
+* unequal-mass galaxies
+* conter-rotating stellar disk
+* decaying orbits?
+
+

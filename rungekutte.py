@@ -60,9 +60,9 @@ def rk4(m0, m1, t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
             t = np.append(t, ti)
             R = np.append(R, np.array([Ri]), axis=0)
             
-    # convert results to cartesian coords
-    # r: [r, phi, r', phi']
-    x = R[:,0]*np.cos(R[:,1])  # r * cos phi
-    y = R[:,0]*np.sin(R[:,1])  # r * sin phi
+#     # convert results to cartesian coords
+#     # r: [r, phi, r', phi']
+#     x = R[:,0]*np.cos(R[:,1])  # r * cos phi
+#     y = R[:,0]*np.sin(R[:,1])  # r * sin phi
 
     return R, x, y, err

@@ -1,104 +1,93 @@
 import numpy as np
 from config import *
 
-def get_path_err(Ri):
-    """
-    Get analytical solution of galaxy path for pair of coordinates, [x, y].
-    
-    The analytic solution of an ellipse is:
-        (x**2 / a**2) + (y**2 / b**2) = 1
-    
-    We calculate the left-hand side of the equation, and
-      return the error = (1 - LHS).
-    
-    """
-    
-    x, y = Ri 
-    
-    # parabolic case
-    if e == 1.:
-        r_test = np.sqrt(x**2 + y**2)
-        phi_test = np.tan(x / y)
-        
-        r_true = 2*rmin / (1 + np.cos(phi))
-    
-    # closed orbit case
-    else:
-        b = a * np.sqrt(1 - e**2)
-        test_point = (x**2 / a**2) + (y**2 / b**2)
-        err = 1 - test_point
-
-
-    return err
-    
-
-def rk4(t0, tmax, r0, phi0, f, h, dr_tol, r_ref):
+def rk4(t0, tmax, r0, v0, f, h, err_tol, r_ref):
     """
     Calculate orbit of a body about center of mass using 4th-order Runge-Kutte
     method.
     
     Inputs:
-      t0, tmax: start, end time of simulation, s
-      r0: initial position of second body, m
-      phi0: initial angular position of second body, rad
-      f: function for getting r', phi'
+      t0, tmax: start, end time of simulation, Myr
+      r0: initial position of second body, kpc
+      v0: initial velocity (in +y direction) of second body, kpc/Myr
+      f: function for getting vx', vy'
       h: time interval
-      dr_tol: amount of allowed deviation from r_ref
-      r_ref: expected value for r
+      err_tol: amount of allowed deviation from r_ref
+      r_ref: expected value for r2
     
     Returns:
-      R: 2-D array of x,y coordinates
-      err: relative error of each (x,y) pair
+      R: 2-D array of x1,y1,x2,y2 coordinates at each step
+      err: relative error of path compared to circle/ellipse/etc.
       
     """
     
-    # initial conditions
-    x0 = r0 * np.cos(phi0)
-    y0 = r0 * np.cos(phi0)
-    R0 = [x0, y0]
-
-    # initialize arrays for t, orbital elements
-    t = np.array(t0)
+    # Initialize arrays for time, position vector, & velocity vector
     ti = t0
-    Ri = np.array(R0)
-    R = np.array([Ri])
+    t = np.array(ti)
+    # mass 1 starts at point of furthest separation
+    x1 = r0  # kpc
+    y1 = 0   # kpc
+    vx1 = 0
+    vy1 = v0
+    # use center of mass m1x1 = m2x2 to get position, vel of mass 2
+    x2 = -(m1/m2)*r0
+    y2 = 0
+    vx2 = 0
+    vy2 = -(m1/m2)*v0
+     
+    print(f"initial R: {[x1, y1, x2, y2]}, f(R) = {f(np.array([x1, y1, x2, y2]))}")
+    # initialize arrays of positions at each step
+    ri = np.array([x1, y1, x2, y2], float)
     
-    debug = True
+    # initialize arrays of velocities at each step
+    vinit = np.array([vx1, vy1, vx2, vy2], float)
+    vi = vinit
+    v_ = np.array([vi]) # Initial vx, vy
     
-    # break if r goes outside tolerance
-    err = np.array([])
-    err_i = get_path_err(Ri)
+    # initialize position-velocity mega-vector
+    r = np.concatenate([ri,vi])
+    R = np.array([r])
     
-    while err_i < dr_tol:
+    
+    debug = False
+    
+    # Initialize steps for error check for circular orbit
+    r_check = np.sqrt(r[0]**2 + r[1]**2)  # current radius, r
+    rel_err = (r_ref - r_check)/r_ref
+    print(f"init err: {rel_err}")
+    err = np.array([rel_err])
+    
+    # solve eqns of motion using R-K method
+    while np.abs(rel_err) < err_tol:
         # break if t = tmax
         if ti > tmax:
             if debug: print(f"Time: {ti} > {tmax}")
             break
         else:
-            # calculate y(t), y'(t)
-            if debug: print(ti, Ri, np.abs(r_check - r_ref))
-            err = np.append(err, get_path_err(Ri))
+            # calculate r(t), r'(t)
             
-            # compute k1, k2, k3, k4 for Ri (r_i, phi_i, r_i', phi_i')
-            k1 = h*f(Ri)
-            k2 = h*f(Ri + k1*0.5) 
-            k3 = h*f(Ri + k2*0.5) 
-            k4 = h*f(Ri + k3)  
+            # compute k1, k2, k3, k4 for r
+            k1  = h*get_f(r, f)
+            k2 = h*get_f(r + k1*0.5, f) 
+            k3 = h*get_f(r + k2*0.5, f) 
+            k4 = h*get_f(r + k3, f)  
 
             # update ti, Ri
             ti += h
-            Ri += (1/6)*(k1 + 2*k2 + 2*k3 + k4)
+            r += (1/6)*(k1 + 2*k2 + 2*k3 + k4)
 
-            # update r_check
-            r_check = Ri
+            # calculate new rel error
+            r_check = np.sqrt(r[0]**2 + r[1]**2)  # current radius, r
+            rel_err = (r_ref - r_check)/r_ref
+            if debug: print(f"{ti} {r_check} {rel_err}")
 
             # save new ri to r
             t = np.append(t, ti)
-            R = np.append(R, np.array([Ri]), axis=0)
+            R = np.append(R, np.array([r]), axis=0)
+            err = np.append(err, rel_err) # relative error
             
-#     # convert results to cartesian coords
-#     # r: [r, phi, r', phi']
-#     x = R[:,0]*np.cos(R[:,1])  # r * cos phi
-#     y = R[:,0]*np.sin(R[:,1])  # r * sin phi
-
-    return R, err
+    # components of cartesian coords
+    # R: [x1, x2, y1, y2]
+    X = R[:,[0,2]]  # x1, x2
+    Y = R[:,[1,3]]  # y1, y2
+    return t, X, Y, err # v_ , err

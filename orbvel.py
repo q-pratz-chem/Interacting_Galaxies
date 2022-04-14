@@ -1,84 +1,48 @@
 import numpy as np
 from config import *
 
-def v_init(r, phi, **kwargs):
+def f(rs, **kwargs):
     """
-    Evaluate first time derivative of r, phi.
+    Evaluate the second derivative of the position vector in 2D.
     
-    Inputs: r -- 2D vector w/ elems r (separation) 
-                 and phi (angle)
-    Returns: 2D array of functions v(theta) and v(omega) 
+    Inputs:  array with x-, y- components of the position vector
+    Returns: array of x-,y- components of acceleration 
              evaluated at these points
     """
         
-    r0 = r
-    phi0 = -np.arccos((p - r0)/(r0*e))
+    # position of mass1, mass2    
+    x1, y1 = rs[0], rs[1]  
+    x2, y2 = rs[2], rs[3] 
+    r = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     
-    # first derivative of (r0, phi0)
-    fphi0 = np.sqrt(G*M*p)/r0**2 
-    fr = e*r0**2*np.sin(phi0)*fphi0/p
-
-    # starting velocity of the second galaxy (cartesian)
-    vx0 = -r0*np.sin(phi0)*fphi0 + fr*np.cos(phi0)
-    vy0 = r0*np.cos(phi0)*fphi0 + fr*np.sin(phi0)
-
-    return np.array([vx0, vy0], float)
-
-def f(r, **kwargs):
-    """
-    Evaluate acceleration of a body with respect to the center of mass
-      with another body, f(x), f(y)
-      
-    Inputs: 
-        Pair of coordinates [x,y]
+    # x, y components of Acceleration a(t) = x''(t), which is also v'(t)
+    ax1 = G*m2*(x2 - x1)/r**3    
+    ay1 = G*m2*(y2 - y1)/r**3    
+    ax2 = G*m1*(x1 - x2)/r**3    
+    ay2 = G*m1*(y1 - y2)/r**3    
     
-    Returns:
-        Array, [f(x), f(y)]
+    return np.array([ax1, ay1, ax2, ay2], float)
+
+def get_f(r, f):
     """
+    Calculate updated x, y, vx, vy for each particle using a function 
+        f(x,y,t) = v'(t)
+    
+    Inputs:
+        r, 1-D array [x1,y1,x2,y2,vx1, vy1, vx2, vy2]
         
-    x, y = rs[0], rs[1]  
-    r = np.sqrt(x**2 + y**2)
+    Returns:
+        fxy, 1-D array v(t), f(x,y,t)
+        
+    """
     
-    # x, y components of Acceleration 'a'
-    ax = G*M*x/r**3    # m_rest: mass of the body at rest
-    ay = G*M*y/r**3    
+    x1, y1 = r[0], r[1]
+    vx1, vy1 = r[4], r[5]
+    x2, y2 = r[2], r[3]
+    vx2, vy2 = r[6], r[7]
     
-    return np.array([ax, ay], float)
-
-
-# def f(rs, **kwargs):
-#     """
-#     Function defining system of equations of motion for two bodies
-#       orbiting about a center of mass
+    fxy = np.array([vx1, vy1, vx2, vy2])
+    fv = f(np.array([x1, y1, x2, y2]))
     
-#     Inputs: r -- 2D vector w/ elems r (distance from center of mass),
-#                     phi (angle from distance of closest approach)
-#     Returns: 2D array of functions f(theta) and f(phi) 
-#              evaluated at r, phi
-#     """
-#     r, phi = rs[0], rs[1]
-#     vr, vphi = v(rs)
-#     #fphi = np.sqrt(G*M*p)/r**2  # this is actually phi'
-#     fphi = -2*np.sqrt(G*M*p)*r**-3*vr  # f(phi) = phi''
-#     # fr = ecc*r**2*np.sin(phi)*fphi/p
-#     fr = e*np.sqrt(G*M/p)*np.cos(phi)*vphi  # f(r) = r''
+    return np.array(np.concatenate([fxy, fv]))
     
-#     return np.array([fr, fphi], float)
-
-# def f(r, **kwargs):
-#     """
-#     Function defining system of equations of motion for two bodies
-#       orbiting about a center of mass
-#     Inputs: r -- 2D vector w/ elems r (distance from center of mass),
-#                     phi (angle from distance of closest approach)
-#     Returns: 2D array of functions f(theta) and f(phi) 
-#              evaluated at r, phi
-#     """
-#     G = kwargs.get('G', 4.4985e-12) # kpc^3/Msun/Myr^2
-#     M = kwargs.get('M', 1e12)      # Msun
-#     p = kwargs.get('p', 1)      # kpc
-#     e = kwargs.get('e', 0.)        # dimensionless
-#     r, phi = r[0], r[1]
-#     fphi = np.sqrt(G*M*p)/r**2        # phi', angular velocity
-#     fr = e*r**2*np.sin(phi)*fphi/p    # r', radial velocity
-#     return np.array([fr, fphi], float)
